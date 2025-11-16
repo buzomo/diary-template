@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>意味ある日記テンプレート</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        .diary-entry {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-height: 80px;
+        }
+        input[type="date"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #FF7F00;
+        }
+        .energy-scale {
+            display: flex;
+            justify-content: space-between;
+            max-width: 300px;
+        }
+        .energy-scale label {
+            font-weight: normal;
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <div class="diary-entry">
+        <h1>意味ある日記</h1>
+
+        <div class="field">
+            <label for="date">日付:</label>
+            <input type="date" id="date" name="date">
+        </div>
+
+        <div class="field">
+            <label for="achievements">今日達成した3つのこと:</label>
+            <textarea id="achievements" name="achievements" placeholder="具体的な成果や行動を3つ挙げましょう"></textarea>
+        </div>
+
+        <div class="field">
+            <label for="gratitude">感謝したこと:</label>
+            <textarea id="gratitude" name="gratitude" placeholder="誰に、何に感謝しましたか？"></textarea>
+        </div>
+
+        <div class="field">
+            <label for="learnings">学び・気づき:</label>
+            <textarea id="learnings" name="learnings" placeholder="今日の学びや新たな視点は何ですか？"></textarea>
+        </div>
+
+        <div class="field">
+            <label for="improvements">改善したいこと:</label>
+            <textarea id="improvements" name="improvements" placeholder="うまくいかなかったことと、その改善策は？"></textarea>
+        </div>
+
+        <div class="field">
+            <label for="commitment">明日へのコミットメント:</label>
+            <textarea id="commitment" name="commitment" placeholder="明日必ず行う具体的な行動を書きましょう"></textarea>
+        </div>
+
+        <div class="field">
+            <label>エネルギー状態:</label>
+            <div class="energy-scale">
+                <span>低い</span>
+                <input type="range" id="energy" name="energy" min="1" max="10" value="5">
+                <span>高い</span>
+            </div>
+        </div>
+
+        <button onclick="openLeChat()">Le Chatに流し込む</button>
+    </div>
+
+    <script>
+        function openLeChat() {
+            const date = document.getElementById('date').value;
+            const achievements = document.getElementById('achievements').value;
+            const gratitude = document.getElementById('gratitude').value;
+            const learnings = document.getElementById('learnings').value;
+            const improvements = document.getElementById('improvements').value;
+            const commitment = document.getElementById('commitment').value;
+            const energy = document.getElementById('energy').value;
+
+            const prompt = `
+以下の日記内容について、深い気づきや内省を促す質問やフィードバックをください。
+
+---
+**日付:** ${date}
+
+**今日達成した3つのこと:**
+${achievements}
+
+**感謝したこと:**
+${gratitude}
+
+**学び・気づき:**
+${learnings}
+
+**改善したいこと:**
+${improvements}
+
+**明日へのコミットメント:**
+${commitment}
+
+**エネルギー状態:** ${energy}/10
+---
+
+### 内省を深めるための質問:
+1. 今日達成した3つのことは、あなたのどのような強みや価値観を反映していますか？
+2. 感謝したことは、あなたの人間関係や幸福感にどのような影響を与えましたか？
+3. 学び・気づきから、今後の行動や考え方にどのような変化をもたらせそうですか？
+4. 改善したいことについて、具体的な行動計画を立てるためのアドバイスはありますか？
+5. エネルギー状態が${energy}だった理由は何だと思いますか？エネルギーを高めるためにできることは？
+`;
+
+            const encodedPrompt = encodeURIComponent(prompt);
+            const url = `https://chat.mistral.ai/chat?q=${encodedPrompt}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
