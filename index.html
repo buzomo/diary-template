@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>意味ある日記テンプレート </title>
+    <title>意味ある日記テンプレート</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -37,26 +37,37 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
         button {
-            background-color: #FF8C00;
-            color: white;
-            border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            border: none;
         }
-        button:hover {
+        #submitButton {
+            background-color: #FF8C00;
+            color: white;
+        }
+        #submitButton:hover {
             background-color: #FF7F00;
+        }
+        #resetButton {
+            background-color: #4169E1;
+            color: white;
+        }
+        #resetButton:hover {
+            background-color: #3557C7;
         }
         .energy-scale {
             display: flex;
             justify-content: space-between;
             max-width: 300px;
-        }
-        .energy-scale label {
-            font-weight: normal;
-            display: inline;
+            align-items: center;
         }
     </style>
 </head>
@@ -103,10 +114,33 @@
             </div>
         </div>
 
-        <button onclick="openLeChat()">Le Chatに流し込む</button>
+        <div class="button-group">
+            <button id="submitButton" onclick="openLeChat()">Le Chatに流し込む</button>
+            <button id="resetButton" onclick="resetFields()">リセット</button>
+        </div>
     </div>
 
     <script>
+        // ページ読み込み時にLocalStorageから復元
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = localStorage.getItem('diaryDate') || today;
+            document.getElementById('achievements').value = localStorage.getItem('diaryAchievements') || '';
+            document.getElementById('gratitude').value = localStorage.getItem('diaryGratitude') || '';
+            document.getElementById('learnings').value = localStorage.getItem('diaryLearnings') || '';
+            document.getElementById('improvements').value = localStorage.getItem('diaryImprovements') || '';
+            document.getElementById('commitment').value = localStorage.getItem('diaryCommitment') || '';
+            document.getElementById('energy').value = localStorage.getItem('diaryEnergy') || 5;
+        });
+
+        // フィールドの内容をLocalStorageに保存
+        document.querySelectorAll('textarea, input').forEach(field => {
+            field.addEventListener('input', function() {
+                localStorage.setItem(`diary${this.id.charAt(0).toUpperCase() + this.id.slice(1)}`, this.value);
+            });
+        });
+
+        // Le Chatに流し込む
         function openLeChat() {
             const date = document.getElementById('date').value;
             const achievements = document.getElementById('achievements').value;
@@ -151,6 +185,27 @@ ${commitment}
             const encodedPrompt = encodeURIComponent(prompt);
             const url = `https://chat.mistral.ai/chat?q=${encodedPrompt}`;
             window.open(url, '_blank');
+        }
+
+        // リセットボタン
+        function resetFields() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            document.getElementById('achievements').value = '';
+            document.getElementById('gratitude').value = '';
+            document.getElementById('learnings').value = '';
+            document.getElementById('improvements').value = '';
+            document.getElementById('commitment').value = '';
+            document.getElementById('energy').value = 5;
+
+            // LocalStorageもクリア
+            localStorage.removeItem('diaryDate');
+            localStorage.removeItem('diaryAchievements');
+            localStorage.removeItem('diaryGratitude');
+            localStorage.removeItem('diaryLearnings');
+            localStorage.removeItem('diaryImprovements');
+            localStorage.removeItem('diaryCommitment');
+            localStorage.removeItem('diaryEnergy');
         }
     </script>
 </body>
